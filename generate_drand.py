@@ -13,7 +13,8 @@ import torchvision
 import torchvision.transforms as T
 
 CIFAR_MEAN = torch.tensor((0.4914, 0.4822, 0.4465))
-CIFAR_STD = torch.tensor((0.2470, 0.2435, 0.2616))
+#CIFAR_STD = torch.tensor((0.2470, 0.2435, 0.2616))
+CIFAR_STD = torch.tensor([0.2023, 0.1994, 0.2010]) # the robustness repo uses these incorrect std values for cifar
 
 # https://github.com/tysam-code/hlb-CIFAR10/blob/main/main.py#L389
 def make_random_square_masks(inputs, size):
@@ -122,10 +123,12 @@ if __name__ == '__main__':
     from robustness.datasets import CIFAR
     from robustness.model_utils import make_and_restore_model
 
-    k = '90dbc7ed-e791-44d5-a5a9-fdeb1acfa170' # REPLACE KEY HERE - resnet50 on CIFAR-10 with default settings
+    #k = '90dbc7ed-e791-44d5-a5a9-fdeb1acfa170' # REPLACE KEY HERE - resnet50 on CIFAR-10 with default settings
+    #path = './checkpoints/%s/149_checkpoint.pt' % k
+    path = './cifar_nat.pt'
     ds = CIFAR('cifar10')
     model, _ = make_and_restore_model(arch='resnet50', dataset=ds,
-                 resume_path='./checkpoints/%s/149_checkpoint.pt' % k)
+                 resume_path=path)
     model.eval()
 
     test_loader = CifarLoader('/tmp/cifar10', train=False, batch_size=100)
