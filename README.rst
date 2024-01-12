@@ -11,7 +11,7 @@ Steps:
 4. Train a new ResNet-50 on the generated D_rand, via the following command:
 
 ```
-python -m robustness.main --dataset cifar --data ./cifar10/ --adv-train 0 --arch resnet50 --out-dir ./checkpoints/
+python -m robustness.main --dataset cifar --data ./cifar10/ --adv-train 0 --lr 0.01 --arch resnet50 --out-dir ./checkpoints/
 ```
 
 Note that `robustness/datasets.py` is modified so that cifar points to the newly generated D_rand.
