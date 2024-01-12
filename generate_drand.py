@@ -131,11 +131,11 @@ if __name__ == '__main__':
                  resume_path=path)
     model.eval()
 
-    test_loader = CifarLoader('/tmp/cifar10', train=False, batch_size=100)
+    test_loader = CifarLoader('cifar10', train=False, batch_size=100)
     test_loader.images = test_loader.images.float()
     print('accuracy on clean test set:', evaluate(model.model, test_loader))
 
-    loader = CifarLoader('/tmp/cifar10', train=True, shuffle=False, batch_size=100)
+    loader = CifarLoader('cifar10', train=True, shuffle=False, batch_size=100)
     loader.images = loader.images.float()
     loader.labels = torch.randint_like(loader.labels, low=0, high=10)
 
