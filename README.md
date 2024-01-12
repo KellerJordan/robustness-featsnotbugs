@@ -26,5 +26,5 @@ Other sanity checks I ran:
 * Training on the versions of D_rand and D_det from [Ilyas et al.'s data release](https://github.com/MadryLab/constructed-datasets): confirmed that this yields the same generalization as reported in the paper.
 * Training a new ResNet-50 from scratch: confirmed that this gets a similar accuracy to their released one, although slightly less because the default in this repo is to only train for 150 rather than 190. Anyway so the training code works fine.
 
-So the issue seems isolated to my code that generates D_rand. But I can't figure out what could be wrong with it. The attack success rate is over 95%.
+So the issue seems isolated to my code that generates D_rand. But I can't figure out what could be wrong with it. The attack success rate is 99.7%.
 
