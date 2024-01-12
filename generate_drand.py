@@ -130,7 +130,7 @@ if __name__ == '__main__':
 
     test_loader = CifarLoader('/tmp/cifar10', train=False, batch_size=100)
     test_loader.images = test_loader.images.float()
-    print('accuracy:', evaluate(model.model, test_loader)
+    print('accuracy on clean test set:', evaluate(model.model, test_loader))
 
     loader = CifarLoader('/tmp/cifar10', train=True, shuffle=False, batch_size=100)
     loader.images = loader.images.float()
