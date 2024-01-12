@@ -323,6 +323,28 @@ class CustomImageNet(DataSet):
             raise ValueError("Dataset doesn't support pytorch_pretrained")
         return imagenet_models.__dict__[arch](num_classes=self.num_classes)
 
+class FeaturesNotBugsWrapper(datasets.CIFAR10):
+    def __init__(self, *args, from_release=False, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Replace the CIFAR-10 training set with adversarial examples as in https://arxiv.org/abs/1905.02175
+        if kwargs['train']:
+            if from_release:
+                name = 'drand_CIFAR'
+                #name = 'ddet_CIFAR'
+                ims = torch.cat(torch.load('/home/ubuntu/ilyas_datasets/release_datasets/%s/CIFAR_ims' % name))
+                labs = torch.cat(torch.load('/home/ubuntu/ilyas_datasets/release_datasets/%s/CIFAR_lab' % name))
+            else:
+                path = './drand_resnet50_featsnotbugs.pt'
+                obj = torch.load(path)
+                ims = obj['images']
+                labs = obj['labels']
+            # ims is now a float tensor of images which is normalized to the [0, 1] range
+            # labs is a torch.long tensor of labels
+            ims_uint8 = (255*ims.permute(0, 2, 3, 1)).cpu().type(torch.uint8).numpy()
+            labs_list = labs.tolist()
+            self.data = ims_uint8
+            self.targets = labs_list
+
 class CIFAR(DataSet):
     """
     CIFAR-10 dataset [Kri09]_.
@@ -350,8 +372,10 @@ class CIFAR(DataSet):
         ds_kwargs = {
             'num_classes': 10,
             'mean': ch.tensor([0.4914, 0.4822, 0.4465]),
-            'std': ch.tensor([0.2023, 0.1994, 0.2010]),
-            'custom_class': datasets.CIFAR10,
+            'std': ch.tensor([0.2023, 0.1994, 0.2010]), # the original robustness repo uses these stds, but they are incorrect
+            #'std': ch.tensor((0.2470, 0.2435, 0.2616)), # these are the correct stds if you want
+            #'custom_class': datasets.CIFAR10,
+            'custom_class': FeaturesNotBugsWrapper,
             'label_mapping': None, 
             'transform_train': da.TRAIN_TRANSFORMS_DEFAULT(32),
             'transform_test': da.TEST_TRANSFORMS_DEFAULT(32)
